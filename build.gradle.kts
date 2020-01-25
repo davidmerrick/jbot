@@ -13,6 +13,7 @@ plugins {
 
 dependencies {
     implementation("me.ramswaroop.jbot:jbot:4.1.2-rc.2")
+    implementation("io.github.microutils:kotlin-logging:1.7.8")
     implementation("org.springframework.boot:spring-boot-dependencies:1.4.0.RELEASE")
     implementation("org.springframework.boot:spring-boot-starter-parent:1.4.0.RELEASE")
     implementation(kotlin("stdlib-jdk8"))

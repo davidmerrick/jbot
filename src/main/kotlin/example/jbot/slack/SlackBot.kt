@@ -5,19 +5,18 @@ import me.ramswaroop.jbot.core.common.EventType
 import me.ramswaroop.jbot.core.common.JBot
 import me.ramswaroop.jbot.core.slack.Bot
 import me.ramswaroop.jbot.core.slack.models.Event
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Profile
 import org.springframework.web.socket.WebSocketSession
 import java.util.regex.Matcher
 
+private val log = KotlinLogging.logger {}
+
 @JBot
 @Profile("slack")
 class SlackBot : Bot() {
-    /**
-     * Slack token from application.properties file. You can get your slack token
-     * next [creating a new bot](https://my.slack.com/services/new/bot).
-     */
+
     @Value("\${slackBotToken}")
     private val slackToken: String? = null
 
@@ -60,21 +59,6 @@ class SlackBot : Bot() {
     }
 
     /**
-     * Invoked when bot receives an event of type file shared.
-     * NOTE: You can't reply to this event as slack doesn't send
-     * a channel id for this event type. You can learn more about
-     * [file_shared](https://api.slack.com/events/file_shared)
-     * event from Slack's Api documentation.
-     *
-     * @param session
-     * @param event
-     */
-    @Controller(events = [EventType.FILE_SHARED])
-    fun onFileShared(session: WebSocketSession?, event: Event?) {
-        logger.info("File shared: {}", event)
-    }
-
-    /**
      * Conversation feature of JBot. This method is the starting point of the conversation (as it
      * calls [Bot.startConversation] within it. You can chain methods which will be invoked
      * one after the other leading to a conversation. You can chain methods with [Controller.next] by
@@ -102,12 +86,6 @@ class SlackBot : Bot() {
         nextConversation(event) // jump to next question in conversation
     }
 
-    /**
-     * This method will be invoked after [SlackBot.confirmTiming].
-     *
-     * @param session
-     * @param event
-     */
     @Controller(next = "askWhetherToRepeat")
     fun askTimeForMeeting(session: WebSocketSession?, event: Event) {
         if (event.text.contains("yes")) {
@@ -119,12 +97,6 @@ class SlackBot : Bot() {
         }
     }
 
-    /**
-     * This method will be invoked after [SlackBot.askTimeForMeeting].
-     *
-     * @param session
-     * @param event
-     */
     @Controller
     fun askWhetherToRepeat(session: WebSocketSession?, event: Event) {
         if (event.text.contains("yes")) {
@@ -133,9 +105,5 @@ class SlackBot : Bot() {
             reply(session, event, "Okay, don't forget to attend the meeting tomorrow :)")
         }
         stopConversation(event) // stop conversation
-    }
-
-    companion object {
-        private val logger = LoggerFactory.getLogger(SlackBot::class.java)
     }
 }
