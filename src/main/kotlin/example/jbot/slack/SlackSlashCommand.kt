@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import me.ramswaroop.jbot.core.slack.models.Attachment
 import me.ramswaroop.jbot.core.slack.models.RichMessage
-import org.slf4j.LoggerFactory
+import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Profile
 import org.springframework.http.MediaType
@@ -13,19 +13,12 @@ import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
-/**
- * Sample Slash Command Handler.
- *
- * @author ramswaroop
- * @version 1.0.0, 20/06/2016
- */
+private val log = KotlinLogging.logger {}
+
 @RestController
 @Profile("slack")
 class SlackSlashCommand {
-    /**
-     * The token you get while creating a new Slash Command. You
-     * should paste the token in application.properties file.
-     */
+
     @Value("\${slashCommandToken}")
     private val slackToken: String? = null
 
@@ -69,17 +62,13 @@ class SlackSlashCommand {
         attachments[0]!!.text = "I will perform all tasks for you."
         richMessage.attachments = attachments
         // For debugging purpose only
-        if (logger.isDebugEnabled) {
+        if (log.isDebugEnabled) {
             try {
-                logger.debug("Reply (RichMessage): {}", ObjectMapper().writeValueAsString(richMessage))
+                log.debug("Reply (RichMessage): {}", ObjectMapper().writeValueAsString(richMessage))
             } catch (e: JsonProcessingException) {
-                logger.debug("Error parsing RichMessage: ", e)
+                log.debug("Error parsing RichMessage: ", e)
             }
         }
         return richMessage.encodedMessage() // don't forget to send the encoded message to Slack
-    }
-
-    companion object {
-        private val logger = LoggerFactory.getLogger(SlackSlashCommand::class.java)
     }
 }
