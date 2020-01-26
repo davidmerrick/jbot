@@ -7,8 +7,9 @@ repositories {
 }
 
 plugins {
-    kotlin("jvm") version "1.3.61"
     id("org.springframework.boot") version "2.0.5.RELEASE"
+    kotlin("jvm") version "1.3.61"
+    kotlin("plugin.spring") version "1.3.61"
 }
 
 dependencies {
@@ -28,6 +29,7 @@ tasks {
 
     compileKotlin {
         kotlinOptions {
+            freeCompilerArgs = listOf("-Xjsr305=strict") // For Spring Boot
             jvmTarget = "1.8"
         }
     }
